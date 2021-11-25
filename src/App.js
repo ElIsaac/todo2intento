@@ -3,26 +3,27 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import { useReducer, useEffect } from 'react';
 import { todoReducer } from './reducer/todoReducer';
 import { useForm } from './hooks/useForm';
+import { TodoList } from './components/TodoList';
 
 function App() {
 
-  
+
   const init = () => {
     /* return [{
       "id": new Date().getTime(),
       "desc": 'bolo',
       "done": 'false'
     }] */
-    return JSON.parse(localStorage.getItem('todos')) || [] ;
+    return JSON.parse(localStorage.getItem('todos')) || [];
   }
   const [todos, dispatch] = useReducer(todoReducer, [], init)
 
   useEffect(() => {
-    localStorage.setItem('todos', JSON.stringify(todos)) 
+    localStorage.setItem('todos', JSON.stringify(todos))
   }, [todos])
 
 
-  
+
   const [{ description }, handleInputChange, reset] = useForm({
     description: ""
   });
@@ -34,6 +35,13 @@ function App() {
     }
 
     dispatch(action);
+  }
+
+  const handleToggle = (todoId) => {
+    dispatch({
+      type: 'toggle',
+      payload: todoId
+    })
   }
 
   const handleSubmit = (e) => {
@@ -62,18 +70,7 @@ function App() {
 
       <div className="row" >
         <div className="col-md-7" >
-          <ul className="list-group list-group-flush">
-            {
-              todos.map(todo => (
-                <li key={todo.id}>
-                  <p className="text-center" >{todo.desc}</p>
-                  <button className="btn btn-danger" onClick={()=>handleDelete(todo.id)} >
-                    borrar
-                  </button>
-                </li>
-              ))
-            }
-          </ul>
+          <TodoList todos={todos} handleToggle={handleToggle} handleDelete={handleDelete} />
         </div>
         <div className="col-md-5">
           <form onSubmit={handleSubmit} >
