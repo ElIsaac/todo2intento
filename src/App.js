@@ -4,6 +4,7 @@ import { useReducer, useEffect } from 'react';
 import { todoReducer } from './reducer/todoReducer';
 import { useForm } from './hooks/useForm';
 import { TodoList } from './components/TodoList';
+import { TodoAdd } from './components/TodoAdd';
 
 function App() {
 
@@ -24,9 +25,7 @@ function App() {
 
 
 
-  const [{ description }, handleInputChange, reset] = useForm({
-    description: ""
-  });
+  
 
   const handleDelete = (todoId) => {
     const action = {
@@ -44,53 +43,29 @@ function App() {
     })
   }
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const newTodo = {
-      id: new Date().getTime(),
-      desc: description,
-      done: false,
-    }
-
-    const action = {
-      type: 'add',
-      payload: newTodo
-    }
-
-    dispatch(action);
-    reset();
+ 
+  
+  const handleAddTodo=(newTodo)=>{
+    dispatch({
+      type:"add",
+      payload:newTodo
+    })
   }
-
 
 
   return (
     <div className="App">
 
       <h1>ToDo's ( {todos.length} ) </h1>
-
       <div className="row" >
-        <div className="col-md-7" >
-          <TodoList todos={todos} handleToggle={handleToggle} handleDelete={handleDelete} />
-        </div>
-        <div className="col-md-5">
-          <form onSubmit={handleSubmit} >
-            <input
-              type="text"
-              name="description"
-              className="form-control"
-              value={description}
-              onChange={handleInputChange}
-            />
-            <button
-              className="btn btn-primary mt-1 btn-block"
-              type="submit"
-            >
-              add
-            </button>
-          </form>
-        </div>
-      </div>
-
+                <div className="col-md-7" >
+                    <TodoList todos={todos} handleToggle={handleToggle} handleDelete={handleDelete} />
+                </div>
+     < TodoAdd
+     handleAddTodo={handleAddTodo}
+     todos={todos}
+     />
+</div>
     </div>
   );
 }
